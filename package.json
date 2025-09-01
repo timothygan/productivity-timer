@@ -1,0 +1,62 @@
+{
+  "name": "aesthetic-pomodoro-timer",
+  "version": "1.0.0",
+  "description": "An aesthetic web-based Pomodoro timer with configurable features and visual modes",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext js,ts",
+    "format": "prettier --write src",
+    "clean": "rm -rf dist node_modules/.vite",
+    "analyze": "vite-bundle-analyzer"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0",
+    "@vitest/ui": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16",
+    "cssnano": "^6.0.2",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.1",
+    "vite-bundle-analyzer": "^0.7.0",
+    "jsdom": "^23.0.1"
+  },
+  "dependencies": {
+    "howler": "^2.2.4",
+    "hotkeys-js": "^3.12.0",
+    "tinycolor2": "^1.6.0",
+    "canvas-confetti": "^1.9.2",
+    "date-fns": "^3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "pomodoro",
+    "timer",
+    "productivity",
+    "aesthetic",
+    "web-app",
+    "vanilla-js"
+  ],
+  "author": "Productivity Timer Project",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/username/productivity-timer.git"
+  }
+}

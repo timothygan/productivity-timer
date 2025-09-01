@@ -1,0 +1,810 @@
+/* ==========================================================================
+   Aesthetic Pomodoro Timer - Main Styles
+   ========================================================================== */
+
+/* CSS Custom Properties (Theme Variables) */
+:root {
+  /* Default theme colors - will be overridden by ThemeProvider */
+  --color-primary: #6366f1;
+  --color-secondary: #8b5cf6;
+  --color-accent: #06b6d4;
+  --color-background: #ffffff;
+  --color-surface: #f8fafc;
+  --color-text: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-border: #e2e8f0;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-focus: #6366f1;
+  --color-break: #10b981;
+  
+  /* Typography */
+  --font-primary: "Inter", system-ui, -apple-system, sans-serif;
+  --font-secondary: "JetBrains Mono", "Courier New", monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  
+  /* Spacing */
+  --spacing-unit: 0.25rem;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  
+  /* Animations */
+  --animation-duration: 0.2s;
+  --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-duration-slow: 0.3s;
+  --animation-easing-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  font-family: var(--font-primary);
+  background: linear-gradient(135deg, var(--color-background) 0%, var(--color-surface) 100%);
+  color: var(--color-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background var(--animation-duration-slow) var(--animation-easing-smooth),
+              color var(--animation-duration) var(--animation-easing);
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+body.is-fullscreen {
+  background: var(--color-background);
+  cursor: auto;
+}
+
+/* ==========================================================================
+   App Layout
+   ========================================================================== */
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--spacing-lg);
+  position: relative;
+}
+
+/* ==========================================================================
+   Timer Display
+   ========================================================================== */
+
+.timer-display {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(90vw, 500px);
+  height: min(90vw, 500px);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.visual-renderer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.timer-text {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  pointer-events: none;
+  transition: transform var(--animation-duration-slow) var(--animation-easing-smooth);
+}
+
+.timer-text:hover {
+  transform: scale(1.02);
+}
+
+.time-value {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-5xl);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+  text-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+  transition: color var(--animation-duration) var(--animation-easing);
+}
+
+.phase-label {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: color var(--animation-duration) var(--animation-easing);
+}
+
+/* Phase-specific styling */
+.timer-text.phase-focus .time-value {
+  color: var(--color-focus);
+}
+
+.timer-text.phase-shortBreak .time-value,
+.timer-text.phase-longBreak .time-value {
+  color: var(--color-break);
+}
+
+/* ==========================================================================
+   Control Panel
+   ========================================================================== */
+
+.control-panel {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.control-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--animation-duration) var(--animation-easing);
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.control-btn:focus {
+  outline: none;
+  ring: 2px solid var(--color-primary);
+  ring-offset: 2px;
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Primary button (Start/Pause) */
+.control-btn.primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.control-btn.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.control-btn.primary:active {
+  transform: translateY(0);
+}
+
+.control-btn.primary.running {
+  background: linear-gradient(135deg, var(--color-warning) 0%, #f97316 100%);
+}
+
+/* Secondary button (Reset) */
+.control-btn.secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.control-btn.secondary:hover:not(:disabled) {
+  background: var(--color-background);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Tertiary button (Settings) */
+.control-btn.tertiary {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+.control-btn.tertiary:hover:not(:disabled) {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-text-secondary);
+}
+
+.btn-text {
+  position: relative;
+  z-index: 2;
+}
+
+/* Button ripple effect */
+.control-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width var(--animation-duration-slow) var(--animation-easing),
+              height var(--animation-duration-slow) var(--animation-easing);
+  z-index: 1;
+}
+
+.control-btn:active::before {
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   Quick Actions
+   ========================================================================== */
+
+.quick-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+}
+
+.quick-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--animation-duration) var(--animation-easing);
+  font-size: var(--font-size-lg);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-btn:hover {
+  background: var(--color-background);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.quick-btn:active {
+  transform: translateY(0);
+}
+
+.quick-btn:focus {
+  outline: none;
+  ring: 2px solid var(--color-primary);
+  ring-offset: 2px;
+}
+
+/* ==========================================================================
+   Modal Styles
+   ========================================================================== */
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modalFadeIn var(--animation-duration-slow) var(--animation-easing);
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--color-background);
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  animation: modalSlideIn var(--animation-duration-slow) var(--animation-easing);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: between;
+  padding: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  flex: 1;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: var(--font-size-2xl);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: 8px;
+  transition: all var(--animation-duration) var(--animation-easing);
+}
+
+.close-btn:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.modal-body {
+  padding: var(--spacing-xl);
+}
+
+.modal-footer {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  padding: var(--spacing-xl);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ==========================================================================
+   Settings Form
+   ========================================================================== */
+
+.setting-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.setting-group label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.setting-group input,
+.setting-group select {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: all var(--animation-duration) var(--animation-easing);
+}
+
+.setting-group input:focus,
+.setting-group select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: var(--color-background);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.setting-group input.valid {
+  border-color: var(--color-success);
+}
+
+.setting-group input.invalid {
+  border-color: var(--color-error);
+}
+
+.validation-error {
+  display: none;
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  margin-top: var(--spacing-xs);
+}
+
+.save-message {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.save-message--success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.save-message--error {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* ==========================================================================
+   Keyboard Shortcuts Help
+   ========================================================================== */
+
+.shortcuts-help {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  left: var(--spacing-lg);
+  z-index: 999;
+  animation: slideInLeft var(--animation-duration-slow) var(--animation-easing);
+}
+
+.shortcuts-help.hidden {
+  display: none;
+}
+
+.shortcuts-content {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--spacing-lg);
+  max-width: 300px;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-lg);
+}
+
+.shortcuts-content h3 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.shortcuts-category {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: var(--spacing-lg) 0 var(--spacing-xs) 0;
+}
+
+.shortcut-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+}
+
+.shortcut-item .key {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: var(--color-background);
+  color: var(--color-text);
+  padding: 2px var(--spacing-xs);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  min-width: 24px;
+  text-align: center;
+}
+
+.shortcut-item .action {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-left: var(--spacing-sm);
+  flex: 1;
+}
+
+/* ==========================================================================
+   Notifications
+   ========================================================================== */
+
+.completion-notification,
+.preset-notification {
+  position: fixed;
+  top: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+  color: white;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1001;
+  transition: transform var(--animation-duration-slow) var(--animation-easing-smooth);
+  max-width: 90vw;
+  text-align: center;
+}
+
+.completion-notification.visible,
+.preset-notification.visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.notification-content h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.notification-content p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  #app {
+    padding: var(--spacing-md);
+  }
+  
+  .timer-display {
+    width: min(85vw, 400px);
+    height: min(85vw, 400px);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .time-value {
+    font-size: var(--font-size-4xl);
+  }
+  
+  .phase-label {
+    font-size: var(--font-size-base);
+  }
+  
+  .control-panel {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+  
+  .control-btn {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    min-width: 100px;
+  }
+  
+  .quick-actions {
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+  
+  .quick-btn {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-base);
+  }
+  
+  .shortcuts-help {
+    bottom: var(--spacing-md);
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+  
+  .shortcuts-content {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .timer-display {
+    width: min(90vw, 300px);
+    height: min(90vw, 300px);
+  }
+  
+  .time-value {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .control-panel {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .control-btn {
+    flex: 1;
+    max-width: 140px;
+  }
+  
+  .modal-content {
+    width: 95vw;
+    margin: var(--spacing-md);
+  }
+}
+
+/* ==========================================================================
+   Fullscreen Styles
+   ========================================================================== */
+
+.is-fullscreen #app {
+  padding: 0;
+}
+
+.is-fullscreen .timer-display {
+  width: min(70vh, 70vw);
+  height: min(70vh, 70vw);
+}
+
+.is-fullscreen .time-value {
+  font-size: min(8vw, 6rem);
+}
+
+.is-fullscreen .phase-label {
+  font-size: min(3vw, 1.5rem);
+}
+
+.is-fullscreen .quick-actions {
+  opacity: 0;
+  transition: opacity var(--animation-duration-slow) var(--animation-easing);
+}
+
+.is-fullscreen .quick-actions:hover {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus indicators */
+*:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --color-border: #000000;
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+  }
+  
+  .control-btn {
+    border-width: 3px;
+  }
+}

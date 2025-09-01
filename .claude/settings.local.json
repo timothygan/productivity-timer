@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/Users/timgan/.claude/**)",
+      "Bash(tree:*)",
+      "Bash(node:*)",
+      "Bash(npm --version)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(npm test)",
+      "Bash(npm run dev:*)",
+      "Bash(find:*)",
+      "mcp__puppeteer__puppeteer_navigate",
+      "mcp__puppeteer__puppeteer_screenshot",
+      "Bash(npm audit:*)",
+      "mcp__browser-tools__getConsoleErrors",
+      "mcp__puppeteer__puppeteer_evaluate",
+      "Bash(grep:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
