@@ -1,4 +1,7 @@
-# Aesthetic Pomodoro Timer
+# Timer project to test my agents and Claude file
+In attempts to see what vibe coding and agentic AI is all about, I made a long, complex Claude file as well as 18 agents responsible for various components of prompt optimization, resesarching, planning, executing, reviewing, and a final integration review. At each step, multiple agents can run in parallel. As a result, I frequently got out of memory issues and claude would crash. While I could just increase the space, I don't think that solves the problem. Back to the drawing board! If you want, you can run this with npm run dev for a really ugly timer and toggle between some really ugly shapes and colors(?).
+
+## Aesthetic Pomodoro Timer
 
 A beautiful, feature-rich web-based Pomodoro timer designed for desktop productivity. Experience focus sessions with stunning visual modes, customizable themes, and intuitive controls.
 
