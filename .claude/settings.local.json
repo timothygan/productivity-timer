@@ -16,7 +16,10 @@
       "Bash(npm audit:*)",
       "mcp__browser-tools__getConsoleErrors",
       "mcp__puppeteer__puppeteer_evaluate",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "mcp__puppeteer__puppeteer_click",
+      "Read(/Users/timgan/.claude/**)",
+      "Read(/Users/timgan/.claude/**)"
     ],
     "deny": [],
     "ask": []

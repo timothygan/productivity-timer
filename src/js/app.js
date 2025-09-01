@@ -40,6 +40,9 @@ class App {
       this.isInitialized = true;
       console.log('🎯 Aesthetic Pomodoro Timer initialized successfully');
       
+      // Hide loading screen and show app
+      this.showApp();
+      
       // Emit app ready event
       document.dispatchEvent(new CustomEvent('app:ready', {
         detail: { app: this }
@@ -372,7 +375,36 @@ class App {
     }, 3000);
   }
 
+  showApp() {
+    // Hide loading screen
+    const loading = document.getElementById('loading');
+    if (loading) {
+      loading.style.transition = 'opacity 0.3s ease-out';
+      loading.style.opacity = '0';
+      setTimeout(() => {
+        loading.style.display = 'none';
+      }, 300);
+    }
+    
+    // Show app container
+    const app = document.getElementById('app');
+    if (app) {
+      app.style.display = 'block';
+      app.style.opacity = '0';
+      app.style.transition = 'opacity 0.3s ease-out';
+      setTimeout(() => {
+        app.style.opacity = '1';
+      }, 50);
+    }
+  }
+
   showErrorMessage(message) {
+    // Hide loading screen first
+    const loading = document.getElementById('loading');
+    if (loading) {
+      loading.style.display = 'none';
+    }
+    
     const errorDiv = document.createElement('div');
     errorDiv.className = 'app-error';
     errorDiv.innerHTML = `

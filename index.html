@@ -31,6 +31,9 @@
   <!-- Web App Manifest -->
   <link rel="manifest" href="/manifest.json">
   
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="/src/css/main.css">
+  
   <!-- CSS Custom Properties for theming -->
   <style>
     :root {
@@ -123,7 +126,106 @@
   
   <!-- Main application container -->
   <div id="app" style="display: none;">
-    <!-- App content will be dynamically generated -->
+    <!-- Timer Display Area -->
+    <div id="timer-display" class="timer-display">
+      <canvas id="timer-canvas"></canvas>
+      <div id="timer-text" class="timer-text">
+        <div class="time-value">25:00</div>
+        <div class="phase-label">Focus</div>
+      </div>
+    </div>
+    
+    <!-- Control Panel -->
+    <div class="control-panel">
+      <button id="start-pause-btn" class="btn btn-primary">
+        <span class="btn-text">Start</span>
+      </button>
+      <button id="reset-btn" class="btn btn-secondary">Reset</button>
+      <button id="settings-btn" class="btn btn-secondary">Settings</button>
+    </div>
+    
+    <!-- Toggle Controls -->
+    <div class="toggle-controls">
+      <button id="theme-toggle" class="btn btn-icon" title="Toggle theme">🌙</button>
+      <button id="visual-mode-toggle" class="btn btn-icon" title="Change visual mode">🎨</button>
+      <button id="fullscreen-toggle" class="btn btn-icon" title="Toggle fullscreen">⛶</button>
+    </div>
+    
+    <!-- Keyboard Shortcuts Help -->
+    <div id="shortcuts-help" class="shortcuts-help" style="display: none;">
+      <div class="shortcuts-content">
+        <h3>Keyboard Shortcuts</h3>
+        <div class="shortcuts-grid">
+          <!-- Content will be populated by JavaScript -->
+        </div>
+        <button class="help-toggle btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Timer Settings</h2>
+        <button id="close-settings" class="btn-close">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="settings-form">
+          <div class="form-group">
+            <label for="focus-time">Focus Time (minutes)</label>
+            <input type="number" id="focus-time" min="1" max="90" value="25">
+            <div class="validation-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="short-break-time">Short Break (minutes)</label>
+            <input type="number" id="short-break-time" min="1" max="30" value="5">
+            <div class="validation-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="long-break-time">Long Break (minutes)</label>
+            <input type="number" id="long-break-time" min="1" max="60" value="15">
+            <div class="validation-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="long-break-interval">Long Break Interval</label>
+            <input type="number" id="long-break-interval" min="2" max="10" value="4">
+            <div class="validation-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="theme-select">Theme</label>
+            <select id="theme-select">
+              <option value="default">Default</option>
+              <option value="dark">Dark</option>
+              <option value="purple">Purple</option>
+              <option value="green">Green</option>
+              <option value="blue">Blue</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="visual-mode-select">Visual Mode</label>
+            <select id="visual-mode-select">
+              <option value="circular">Circular</option>
+              <option value="shapes">Creative Shapes</option>
+              <option value="minimal">Minimal</option>
+              <option value="bars">Progress Bars</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button id="cancel-settings" class="btn btn-secondary">Cancel</button>
+        <button id="save-settings" class="btn btn-primary">Save</button>
+      </div>
+    </div>
   </div>
   
   <!-- Error fallback -->
